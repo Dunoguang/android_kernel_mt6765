@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: GPL-2.0
 #!/bin/bash
 # 配置断言:merge_config + olddefconfig 后运行,防止级联污染静默丢选项(ION 教训)
 CFG=${1:-/home/yang/项目/kernel/out/.config}

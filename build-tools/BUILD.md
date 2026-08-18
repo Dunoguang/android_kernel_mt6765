@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: GPL-2.0 -->
 # Redmi 9A (dandelion, MT6762G) 完整内核定制 — 构建与维护指南
 
 - 仓库: https://github.com/plmzaq2112/android_kernel_mt6765

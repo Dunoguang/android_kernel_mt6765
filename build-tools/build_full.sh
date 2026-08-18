@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: GPL-2.0
 #!/bin/bash
 cd /home/yang/项目/kernel/mt6765-4.19
 TC=/home/yang/项目/kernel/toolchain/bin

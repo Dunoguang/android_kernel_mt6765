@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: GPL-2.0
 #!/usr/bin/env python3
 """Repack boot.img: replace kernel, keep original ramdisk + dtb + header fields."""
 import struct, sys
