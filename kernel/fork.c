@@ -2591,6 +2591,17 @@ SYSCALL_DEFINE2(clone3, struct clone_args __user *, uargs, size_t, size)
 
 	struct kernel_clone_args kargs;
 
+	/*
+	 * This kernel implements the initial 64-byte clone_args layout
+	 * (Linux 5.3).  Modern glibc (>= 2.38, e.g. Debian trixie) passes
+	 * the extended 88-byte layout (set_tid/set_tid_size/cgroup);
+	 * copy_clone_args_from_user rejects its non-zero tail bytes with
+	 * E2BIG, which glibc maps to EINVAL, breaking pthread_create.
+	 * Report ENOSYS so callers fall back to the legacy clone() syscall.
+	 */
+	if (size > sizeof(struct clone_args))
+		return -ENOSYS;
+
 	err = copy_clone_args_from_user(&kargs, uargs, size);
 	if (err)
 		return err;
