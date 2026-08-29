@@ -80,6 +80,11 @@ jobs:
         run: |
           echo "::group::Building Image.gz + dtbs"
           set -o pipefail
+          # 先编译 security/selinux 生成 flask.h（KernelSU kernel_compat.h 依赖此生成头文件，
+          # 干净环境并行编译会因 flask.h 未生成而失败）
+          make O=out ARCH=arm64 CC=clang CLANG_TRIPLE=aarch64-linux-gnu- \
+            CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc) security/selinux/ 2>&1 | tail -3 || true
+          # 全量编译
           make O=out ARCH=arm64 CC=clang CLANG_TRIPLE=aarch64-linux-gnu- \
             CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc) Image.gz dtbs 2>&1 | tee /tmp/build.log
           echo "::endgroup::"
