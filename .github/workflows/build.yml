@@ -43,6 +43,11 @@ jobs:
           git reset --hard origin/main
           git submodule foreach --recursive 'git reset --hard HEAD; git clean -fdx' 2>/dev/null || true
           git submodule update --init --recursive
+          # KernelSU submodule 被 shallow clone (fetch-depth:1) 后 rev-list --count 只返回 1，
+          # 导致 KSU_VERSION=30000+1+700=30701 而非 35104。unshallow 获取完整计数。
+          if git -C KernelSU rev-parse --is-shallow-repository 2>/dev/null | grep -q true; then
+            git -C KernelSU fetch --unshallow origin
+          fi
 
       - name: Install dependencies
         run: |
