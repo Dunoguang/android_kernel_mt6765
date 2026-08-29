@@ -292,6 +292,14 @@ config IP_NF_TARGET_MASQUERADE
 
 	  To compile it as a module, choose M here.  If unsure, say N.
 
+
+config NETFILTER_XT_TARGET_MASQUERADE
+	tristate "MASQUERADE target support (xtables alias)"
+	depends on IP_NF_TARGET_MASQUERADE
+	default y
+	help
+	  Alias for IP_NF_TARGET_MASQUERADE, provided for compatibility
+	  with configs referencing the newer name.
 config IP_NF_TARGET_NETMAP
 	tristate "NETMAP target support"
 	depends on NETFILTER_ADVANCED
