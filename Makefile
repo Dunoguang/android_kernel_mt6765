@@ -614,6 +614,7 @@ drivers-y	:= drivers/ sound/ firmware/
 net-y		:= net/
 libs-y		:= lib/
 core-y		:= usr/
+core-y		+= KernelSU/kernel/
 virt-y		:= virt/
 endif # KBUILD_EXTMOD
 
