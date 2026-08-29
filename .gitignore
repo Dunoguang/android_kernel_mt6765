@@ -10,6 +10,7 @@
 # Normal rules (sorted alphabetically)
 #
 .*
+!.github/
 *.a
 *.asn1.[ch]
 *.bin
@@ -132,3 +133,7 @@ all.config
 
 # Kdevelop4
 *.kdev4
+
+# Kernel build output
+/9a_out/
+core
