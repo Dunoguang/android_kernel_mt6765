@@ -74,12 +74,10 @@ jobs:
 
       - name: Generate/Refresh .config
         run: |
-          if [ -f out/.config ]; then
-            make O=out ARCH=arm64 olddefconfig
-          else
-            make O=out ARCH=arm64 blossom_defconfig
-          fi
-          grep -E '^CONFIG_(KSU|KSU_MANUAL_HOOK|KALLSYMS|BUILD_ARM64)=' out/.config
+          # 始终从 blossom_defconfig 重新生成 .config（workspace 缓存可能恢复旧 out/.config，
+          # 若只 olddefconfig 会导致新加入 defconfig 的配置项不生效，如 DEVTMPFS/USER_NS 等）
+          make O=out ARCH=arm64 blossom_defconfig
+          grep -E '^CONFIG_(KSU|KSU_MANUAL_HOOK|KALLSYMS|BUILD_ARM64|DEVTMPFS|IPC_NS|USER_NS|FW_LOADER_COMPRESS)=' out/.config
 
       - name: Build kernel Image.gz + dtbs
         run: |
