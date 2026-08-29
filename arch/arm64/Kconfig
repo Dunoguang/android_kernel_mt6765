@@ -1398,6 +1398,24 @@ config DMI
 	  However, even with this option, the resultant kernel should
 	  continue to boot on existing non-UEFI platforms.
 
+config BUILD_ARM64_APPENDED_DTB_IMAGE
+bool "Build appended DTB image"
+default y
+help
+  Enable building the ARM64 Image with appended DTB.
+
+config BUILD_ARM64_DTB_OVERLAY_IMAGE
+bool "Build DTB overlay image"
+default y
+help
+  Enable building the ARM64 DTB overlays.
+
+config BUILD_ARM64_DTB_OVERLAY_IMAGE_NAMES
+string "Default dtbo names"
+depends on BUILD_ARM64_DTB_OVERLAY_IMAGE
+help
+  Space separated list of names of dtbo overlays to build.
+
 config BUILD_ARM64_APPENDED_DTB_IMAGE_NAMES
 	string "Default dtb names"
 	depends on BUILD_ARM64_APPENDED_DTB_IMAGE
