@@ -1,0 +1,163 @@
+name: Build Kernel (Redmi 9A / MT6765)
+
+on:
+  push:
+    branches: [ '**' ]
+    tags-ignore: [ '**' ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      CCACHE_MAXSIZE: 4G
+      CCACHE_NOHASHDIR: "true"
+      CCACHE_HARDLINK: "true"
+      CCACHE_NOCOMPRESS: "true"
+      CCACHE_DIR: /home/runner/.ccache
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          submodules: recursive
+          fetch-depth: 1
+
+      # ============ 整个工作区缓存（含 out/ 编译产物）============
+      - name: Restore workspace (with build output)
+        id: ws-restore
+        uses: actions/cache/restore@v6.1.0
+        with:
+          path: |
+            ${{ github.workspace }}
+            !${{ github.workspace }}/.git
+          key: ws-mt6765-${{ runner.os }}-${{ hashFiles('arch/arm64/configs/blossom_defconfig') }}-${{ github.run_id }}
+          restore-keys: |
+            ws-mt6765-${{ runner.os }}-${{ hashFiles('arch/arm64/configs/blossom_defconfig') }}-
+            ws-mt6765-${{ runner.os }}-
+
+      - name: Update repo to latest
+        run: |
+          git fetch origin
+          git reset --hard origin/main
+          git submodule foreach --recursive 'git reset --hard HEAD; git clean -fdx' 2>/dev/null || true
+          git submodule update --init --recursive
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang gcc-aarch64-linux-gnu \
+            flex bison bc libssl-dev ccache zip
+          clang --version | head -1
+
+      - name: Restore ccache
+        id: cache-restore
+        uses: actions/cache/restore@v6.1.0
+        with:
+          path: ~/.ccache
+          key: ccache-mt6765-${{ runner.os }}-${{ hashFiles('arch/arm64/configs/blossom_defconfig') }}-${{ github.run_id }}
+          restore-keys: |
+            ccache-mt6765-${{ runner.os }}-${{ hashFiles('arch/arm64/configs/blossom_defconfig') }}-
+            ccache-mt6765-${{ runner.os }}-
+
+      - name: Setup ccache
+        run: |
+          echo "/usr/lib/ccache" >> $GITHUB_PATH
+          ccache -M 4G
+          ccache -z
+
+      - name: Generate/Refresh .config
+        run: |
+          if [ -f out/.config ]; then
+            make O=out ARCH=arm64 olddefconfig
+          else
+            make O=out ARCH=arm64 blossom_defconfig
+          fi
+          grep -E '^CONFIG_(KSU|KSU_MANUAL_HOOK|KALLSYMS|BUILD_ARM64)=' out/.config
+
+      - name: Build kernel Image.gz + dtbs
+        run: |
+          echo "::group::Building Image.gz + dtbs"
+          set -o pipefail
+          make O=out ARCH=arm64 CC=clang CLANG_TRIPLE=aarch64-linux-gnu- \
+            CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc) Image.gz dtbs 2>&1 | tee /tmp/build.log
+          echo "::endgroup::"
+          ls -lh out/arch/arm64/boot/Image.gz
+          file out/arch/arm64/boot/Image.gz
+
+      - name: Report ReSukiSU version
+        run: |
+          VCODE=$(grep -oE "ReSukiSU version code: [0-9]+" /tmp/build.log | head -1 | awk '{print $NF}')
+          VNAME=$(grep -oE "ReSukiSU version name: .+" /tmp/build.log | head -1 | sed 's/.*name: //')
+          HOOK=$(grep -oE "ReSukiSU: using [A-Za-z ]+Hook" /tmp/build.log | head -1 | sed 's/.*using //')
+          { echo "## ReSukiSU (Manual Hook)"; echo ""; echo "- **Version code**: $VCODE"; echo "- **Version name**: $VNAME"; echo "- **Hook method**: $HOOK"; } >> "$GITHUB_STEP_SUMMARY"
+          echo "vcode=$VCODE" >> "$GITHUB_ENV"
+
+      - name: Save ccache
+        if: always()
+        uses: actions/cache/save@v6.1.0
+        with:
+          path: ~/.ccache
+          key: ccache-mt6765-${{ runner.os }}-${{ hashFiles('arch/arm64/configs/blossom_defconfig') }}-${{ github.run_id }}
+
+      # ============ AnyKernel3 (osm0sis) 刷机 zip ============
+      - name: Checkout AnyKernel3
+        uses: actions/checkout@v7.0.1
+        with:
+          repository: osm0sis/AnyKernel3
+          path: AnyKernel3
+
+      - name: Package AnyKernel3 zip
+        run: |
+          cp tools/ak3-template/anykernel.sh AnyKernel3/anykernel.sh
+          cp out/arch/arm64/boot/Image.gz AnyKernel3/Image.gz
+          cp tools/magiskboot AnyKernel3/tools/magiskboot
+          cp tools/ak3-core-diagnostic.sh AnyKernel3/tools/ak3-core.sh
+          cp tools/update-binary-diagnostic AnyKernel3/META-INF/com/google/android/update-binary
+          cd AnyKernel3
+          TS=$(TZ=Asia/Shanghai date +%Y%m%d%H%M%S)
+          ZIP="REDMI9A-RSSU${vcode}-ByDunoguang-${TS}-AK3.zip"
+          zip -r9 "$ZIP" * -x .git README.md '*placeholder'
+          cd ..
+          mv "AnyKernel3/$ZIP" .
+          echo "ak3_zip=$ZIP" >> "$GITHUB_ENV"
+          echo "::notice::AK3 artifact: ${ZIP} ($(du -h "$ZIP" | cut -f1))"
+          unzip -l "$ZIP" | grep -E "Image|anykernel.sh"
+
+      - name: Upload AnyKernel3 zip
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: ${{ env.ak3_zip }}
+          path: ${{ env.ak3_zip }}
+
+      - name: Upload AK3 to Tempfile
+        if: always()
+        continue-on-error: true
+        run: |
+          if [ ! -f "${ak3_zip}" ]; then
+            echo "AK3 zip missing, skip" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          RESP=$(curl -sS -X POST https://tempfile.org/api/upload/local \
+            -F "files=@${ak3_zip}" -F "expiryHours=48")
+          URL=$(echo "$RESP" | python3 -c "import sys,json; print(json.load(sys.stdin)['files'][0]['url'] + 'download')")
+          cat >> "$GITHUB_STEP_SUMMARY" << EOM
+          ## AK3 Tempfile 下载
+          | Artifact | Link | Size | Expiry |
+          |----------|------|------|--------|
+          | ${ak3_zip} | [download](${URL}) | $(du -h "$ak3_zip" | cut -f1) | 48h |
+
+          > \`${URL}\`
+          EOM
+          echo "AK3_TEMP_URL=${URL}"
+
+      # ============ 保存整个工作区（含 out/ 编译产物）============
+      - name: Save workspace (with build output)
+        if: always()
+        uses: actions/cache/save@v6.1.0
+        with:
+          path: |
+            ${{ github.workspace }}
+            !${{ github.workspace }}/.git
+          key: ws-mt6765-${{ runner.os }}-${{ hashFiles('arch/arm64/configs/blossom_defconfig') }}-${{ github.run_id }}
