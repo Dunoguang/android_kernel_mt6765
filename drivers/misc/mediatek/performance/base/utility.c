@@ -8,6 +8,7 @@
 #ifdef CONFIG_TRACING
 #include <linux/kallsyms.h>
 #include <linux/trace_events.h>
+#include <linux/mm.h>
 #endif
 
 char *perfmgr_copy_from_user_for_proc(const char __user *buffer,
