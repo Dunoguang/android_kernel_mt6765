@@ -14,6 +14,7 @@
 #include <linux/spinlock.h>
 #include <linux/irq.h>
 #include <linux/sched.h>
+#include <linux/sched/clock.h>
 #include <linux/cdev.h>
 #include <linux/init.h>
 #include <linux/fs.h>

@@ -1,0 +1,22 @@
+--- /home/a12bbb/android-kernel/android_kernel_mt6765-main/drivers/misc/mediatek/connectivity/gps/fw_log_gps.c	2026-09-12 11:29:11.253614616 +0800
++++ /home/a12bbb/kernel-patch-workspace/android_kernel_mt6765-main/drivers/misc/mediatek/connectivity/gps/fw_log_gps.c	2026-09-14 23:23:42.188450748 +0800
+@@ -35,9 +35,7 @@
+ #endif
+ #include <linux/wait.h>
+ #include "gps.h"
+-#if 0
+ #include "connsys_debug_utility.h"
+-#endif
+ #ifdef pr_fmt
+ #undef pr_fmt
+ #endif
+@@ -239,9 +237,7 @@
+ 	}
+ 
+ 	pr_info("Unregistering chardev\n");
+-	#if 0
+ 	connsys_log_deinit(CONNLOG_TYPE_GPS);
+-	#endif
+ 	cdev_del(&logdevobj->chdev);
+ 	unregister_chrdev_region(logdevobj->devno, 1);
+ 	device_destroy(logdevobj->cls, logdevobj->devno);

@@ -23,7 +23,7 @@ int sched_set_cpuprefer(pid_t pid, unsigned int prefer_type)
 		raw_spin_lock_irqsave(&p->pi_lock, flags);
 		p->cpu_prefer = prefer_type;
 		raw_spin_unlock_irqrestore(&p->pi_lock, flags);
-		trace_sched_set_cpuprefer(p);
+		trace_sched_set_cpuprefer(p, prefer_type);
 	} else {
 		retval = -ESRCH;
 	}

@@ -1,0 +1,5 @@
+# v2 开机修复: NR_CPUS=64 -> 8, 关闭 MTK sched 扩展 (对齐 blossom/KSU25 成功启动组合)
+CONFIG_NR_CPUS=8
+# CONFIG_MTK_SCHED_CPU_PREFER is not set
+# CONFIG_MTK_SCHED_BIG_TASK_MIGRATE is not set
+# CONFIG_MTK_SCHED_INTEROP is not set

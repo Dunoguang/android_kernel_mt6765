@@ -1,0 +1,12 @@
+--- /home/a12bbb/android-kernel/android_kernel_mt6765-main/drivers/misc/mediatek/connectivity/common/common_main/linux/wmt_user_proc.c	2026-08-30 18:46:25.000000000 +0800
++++ /home/a12bbb/kernel-patch-workspace/android_kernel_mt6765-main/drivers/misc/mediatek/connectivity/common/common_main/linux/wmt_user_proc.c	2026-09-15 09:59:11.828464860 +0800
+@@ -16,9 +16,7 @@
+ #include "wmt_user_proc.h"
+ #include "wmt_lib.h"
+ #include "stp_core.h"
+-#if 0
+ #include "connsys_debug_utility.h"
+-#endif
+ #include "wmt_alarm.h"
+ 
+ #ifdef DFT_TAG

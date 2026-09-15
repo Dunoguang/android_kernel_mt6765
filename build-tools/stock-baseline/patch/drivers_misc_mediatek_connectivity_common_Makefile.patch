@@ -1,0 +1,33 @@
+--- /home/a12bbb/android-kernel/android_kernel_mt6765-main/drivers/misc/mediatek/connectivity/common/Makefile	2026-09-12 11:20:35.137746091 +0800
++++ /home/a12bbb/kernel-patch-workspace/android_kernel_mt6765-main/drivers/misc/mediatek/connectivity/common/Makefile	2026-09-15 09:58:26.216505847 +0800
+@@ -76,7 +76,7 @@
+ ###############################################################################
+ 
+ 
+-ccflags-y += -Wno-error
++ccflags-y += 
+ 
+ ifneq ($(filter "MT6628",$(CONFIG_MTK_COMBO_CHIP)),)
+     ccflags-y += -D MT6628
+@@ -141,7 +141,7 @@
+ ccflags-y += -I$(src)/common_main/linux/include
+ ccflags-y += -I$(src)/common_detect/drv_init/inc
+ ccflags-y += -I$(src)/common_detect
+-#ccflags-y += -I$(src)/debug_utility
++ccflags-y += -I$(src)/debug_utility
+ 
+ $(MODULE_NAME)-objs += common_detect/wmt_detect_pwr.o
+ $(MODULE_NAME)-objs += common_detect/wmt_detect.o
+@@ -267,9 +267,9 @@
+ $(MODULE_NAME)-objs += common_main/linux/stp_btif.o
+ endif
+ 
+-#$(MODULE_NAME)-objs += debug_utility/ring.o
+-#$(MODULE_NAME)-objs += debug_utility/ring_emi.o
+-#$(MODULE_NAME)-objs += debug_utility/connsys_debug_utility.o
++$(MODULE_NAME)-objs += debug_utility/ring.o
++$(MODULE_NAME)-objs += debug_utility/ring_emi.o
++$(MODULE_NAME)-objs += debug_utility/connsys_debug_utility.o
+ 
+ ###############################################################################
+ # test

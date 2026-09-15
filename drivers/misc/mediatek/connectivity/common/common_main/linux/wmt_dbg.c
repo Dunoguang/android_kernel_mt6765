@@ -29,9 +29,7 @@
 #include "psm_core.h"
 #include "stp_core.h"
 #include "stp_dbg.h"
-#if 0
 #include "connsys_debug_utility.h"
-#endif
 #include "wmt_step.h"
 #include "wmt_alarm.h"
 #ifdef CONFIG_MTK_ENG_BUILD

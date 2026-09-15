@@ -39,9 +39,7 @@
 #include <linux/delay.h>
 #include <linux/memblock.h>
 #include <linux/platform_device.h>
-#if 0
 #include "connsys_debug_utility.h"
-#endif
 #ifdef CONFIG_MTK_CONNSYS_DEDICATED_LOG_PATH
 #include "fw_log_wmt.h"
 #endif

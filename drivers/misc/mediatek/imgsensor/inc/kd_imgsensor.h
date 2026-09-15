@@ -346,6 +346,7 @@
 #define HYNIX_HI1337_III_SENSOR_ID              0x1339
 #define HYNIX_HI1337_IIII_SENSOR_ID             0x133a
 #define GC02M1_SENSOR_ID                        0x02e0
+#define gc02m10_SENSOR_ID                       0x0210
 #define GC02M1MACRO_SENSOR_ID                   0x02e2
 #define HYNIX_HI259_I_SENSOR_ID 	0xe1
 #define HYNIX_HI259_II_SENSOR_ID 	0xe2
@@ -353,6 +354,7 @@
 #define HYNIX_HI259_IV_SENSOR_ID 	0xe4
 #define OV02B_SENSOR_ID 	0x2b
 #define OV02B_III_SENSOR_ID 	0x2c
+#define OV02B_V_SENSOR_ID   	0x2d
 
 /* CAMERA DRIVER NAME */
 #define CAMERA_HW_DEVNAME                       "kd_camera_hw"
