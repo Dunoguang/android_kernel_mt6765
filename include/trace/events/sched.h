@@ -1028,6 +1028,95 @@ TRACE_EVENT(sched_overutilized,
 		__entry->overutilized)
 );
 
+/*
+ * Tracepoint for MediaTek cpu prefer update
+ * (kernel/sched/extension/tuning.c, CONFIG_MTK_SCHED_CPU_PREFER)
+ * NOTE: added by this project to fix missing declaration upstream.
+ */
+TRACE_EVENT(sched_set_cpuprefer,
+
+	TP_PROTO(struct task_struct *p, unsigned int prefer_type),
+
+	TP_ARGS(p, prefer_type),
+
+	TP_STRUCT__entry(
+		__array( char,  comm, TASK_COMM_LEN	)
+		__field( pid_t, pid			)
+		__field( unsigned int, prefer_type    	)
+	),
+
+	TP_fast_assign(
+		memcpy(__entry->comm, p->comm, TASK_COMM_LEN);
+		__entry->pid          = p->pid;
+		__entry->prefer_type  = prefer_type;
+	),
+
+	TP_printk("comm=%s pid=%d prefer_type=%u",
+		__entry->comm, __entry->pid, __entry->prefer_type)
+);
+
+/*
+ * Tracepoint for MediaTek big task rotation
+ * (kernel/sched/fair.c, CONFIG_MTK_SCHED_BIG_TASK_MIGRATE)
+ * NOTE: added by this project to fix missing declaration upstream.
+ */
+TRACE_EVENT(sched_big_task_rotation,
+
+	TP_PROTO(int src_cpu, int dst_cpu, int src_pid, int dst_pid, bool force, bool set_uclamp),
+
+	TP_ARGS(src_cpu, dst_cpu, src_pid, dst_pid, force, set_uclamp),
+
+	TP_STRUCT__entry(
+		__field( int, src_cpu )
+		__field( int, dst_cpu )
+		__field( int, src_pid )
+		__field( int, dst_pid )
+		__field( bool, force )
+		__field( bool, set_uclamp )
+	),
+
+	TP_fast_assign(
+		__entry->src_cpu = src_cpu;
+		__entry->dst_cpu = dst_cpu;
+		__entry->src_pid = src_pid;
+		__entry->dst_pid = dst_pid;
+		__entry->force = force;
+		__entry->set_uclamp = set_uclamp;
+	),
+
+	TP_printk("src_cpu=%d dst_cpu=%d src_pid=%d dst_pid=%d force=%d set_uclamp=%d",
+		__entry->src_cpu, __entry->dst_cpu,
+		__entry->src_pid, __entry->dst_pid,
+		__entry->force, __entry->set_uclamp)
+);
+
+/*
+ * Tracepoint for MediaTek big task migration
+ * (kernel/sched/fair.c, CONFIG_MTK_SCHED_BIG_TASK_MIGRATE)
+ * NOTE: added by this project to fix missing declaration upstream.
+ */
+TRACE_EVENT(sched_big_task_migration,
+
+	TP_PROTO(int pid, int src_cpu, int dst_cpu),
+
+	TP_ARGS(pid, src_cpu, dst_cpu),
+
+	TP_STRUCT__entry(
+		__field( int, pid )
+		__field( int, src_cpu )
+		__field( int, dst_cpu )
+	),
+
+	TP_fast_assign(
+		__entry->pid = pid;
+		__entry->src_cpu = src_cpu;
+		__entry->dst_cpu = dst_cpu;
+	),
+
+	TP_printk("pid=%d src_cpu=%d dst_cpu=%d",
+		__entry->pid, __entry->src_cpu, __entry->dst_cpu)
+);
+
 #endif /* CONFIG_SMP */
 #endif /* _TRACE_SCHED_H */
 

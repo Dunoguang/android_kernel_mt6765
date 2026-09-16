@@ -71,9 +71,7 @@
 #include "wmt_proc_dbg.h"
 #include "wmt_alarm.h"
 
-#if 0
 #include "connsys_debug_utility.h"
-#endif
 
 #ifdef CONFIG_COMPAT
 #define COMPAT_WMT_IOCTL_SET_PATCH_NAME		_IOW(WMT_IOC_MAGIC, 4, compat_uptr_t)

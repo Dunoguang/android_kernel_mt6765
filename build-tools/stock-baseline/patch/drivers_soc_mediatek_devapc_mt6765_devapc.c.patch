@@ -1,0 +1,10 @@
+--- /home/a12bbb/android-kernel/android_kernel_mt6765-main/drivers/soc/mediatek/devapc/mt6765/devapc.c	2026-08-30 18:46:25.000000000 +0800
++++ /home/a12bbb/kernel-patch-workspace/android_kernel_mt6765-main/drivers/soc/mediatek/devapc/mt6765/devapc.c	2026-09-14 23:25:59.657459685 +0800
+@@ -14,6 +14,7 @@
+ #include <linux/spinlock.h>
+ #include <linux/irq.h>
+ #include <linux/sched.h>
++#include <linux/sched/clock.h>
+ #include <linux/cdev.h>
+ #include <linux/init.h>
+ #include <linux/fs.h>

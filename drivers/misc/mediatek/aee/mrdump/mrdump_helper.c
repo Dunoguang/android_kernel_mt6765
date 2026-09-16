@@ -732,6 +732,11 @@ void aee__flush_dcache_area(void *addr, size_t len)
 	__flush_dcache_area(addr, len);
 }
 
+void aee_wdt_zap_locks(void)
+{
+	pr_info("%s weak function", __func__);
+}
+
 void aee_zap_locks(void)
 {
 	aee_wdt_zap_locks();

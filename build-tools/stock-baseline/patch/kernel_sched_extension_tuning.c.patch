@@ -1,0 +1,11 @@
+--- /home/a12bbb/android-kernel/android_kernel_mt6765-main/kernel/sched/extension/tuning.c	2026-08-30 18:46:25.000000000 +0800
++++ /home/a12bbb/kernel-patch-workspace/android_kernel_mt6765-main/kernel/sched/extension/tuning.c	2026-09-14 22:18:24.710448487 +0800
+@@ -23,7 +23,7 @@
+ 		raw_spin_lock_irqsave(&p->pi_lock, flags);
+ 		p->cpu_prefer = prefer_type;
+ 		raw_spin_unlock_irqrestore(&p->pi_lock, flags);
+-		trace_sched_set_cpuprefer(p);
++		trace_sched_set_cpuprefer(p, prefer_type);
+ 	} else {
+ 		retval = -ESRCH;
+ 	}

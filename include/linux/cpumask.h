@@ -484,7 +484,9 @@ static inline int cpumask_test_and_clear_cpu(int cpu, struct cpumask *cpumask)
 static inline void cpumask_setall(struct cpumask *dstp)
 {
 	/* bitmap_fill() isn't optimized for compile-time constants */
-#if NR_CPUS <= BITS_PER_LONG
+#if NR_CPUS == BITS_PER_LONG
+	*cpumask_bits(dstp) = ULONG_MAX;
+#elif NR_CPUS < BITS_PER_LONG
 	*cpumask_bits(dstp) = BIT(NR_CPUS) - 1;
 #else
 	bitmap_fill(cpumask_bits(dstp), nr_cpumask_bits);

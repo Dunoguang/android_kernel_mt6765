@@ -6,6 +6,9 @@
 - 分支: `main` (单提交, 含全部移植与修复)
 - 上游跟踪: `git remote add upstream https://github.com/duhenduhen/android_kernel_xiaomi_mt6765.git`
 
+> 另一条路线: 本仓库同时提供 **stock_defconfig 干净基线构建** (无 5.x 移植/加固,
+> 仅编译修复 + 可开机打磨) —— 见 `build-tools/stock-baseline/README.md`。
+
 ---
 
 ## 1. 构建环境准备(全新机器)

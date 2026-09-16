@@ -1,0 +1,12 @@
+--- /home/a12bbb/android-kernel/android_kernel_mt6765-main/drivers/misc/mediatek/connectivity/wlan/adaptor/fw_log_wifi.c	2026-08-30 18:46:25.000000000 +0800
++++ /home/a12bbb/kernel-patch-workspace/android_kernel_mt6765-main/drivers/misc/mediatek/connectivity/wlan/adaptor/fw_log_wifi.c	2026-09-15 09:59:11.852464847 +0800
+@@ -33,9 +33,7 @@
+ 
+ #include "wmt_exp.h"
+ #include "stp_exp.h"
+-#if 0
+ #include "connsys_debug_utility.h"
+-#endif
+ 
+ #if (CFG_ANDORID_CONNINFRA_SUPPORT == 1)
+ #include "fw_log_wifi.h"

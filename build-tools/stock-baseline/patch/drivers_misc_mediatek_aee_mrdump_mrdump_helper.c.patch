@@ -1,0 +1,26 @@
+--- /home/a12bbb/android-kernel/android_kernel_mt6765-main/drivers/misc/mediatek/aee/mrdump/mrdump_helper.c	2026-09-12 13:48:11.192146034 +0800
++++ /home/a12bbb/kernel-patch-workspace/android_kernel_mt6765-main/drivers/misc/mediatek/aee/mrdump/mrdump_helper.c	2026-09-14 23:22:03.938591035 +0800
+@@ -663,12 +663,6 @@
+ }
+ 
+ extern int save_modules(char *mbuf, int mbufsize);
+-#ifndef CONFIG_MODULES
+-int save_modules(char *mbuf, int mbufsize)
+-{
+-	return 0;
+-}
+-#endif
+ /* MUST ensure called when preempt disabled already */
+ int aee_save_modules(char *mbuf, int mbufsize)
+ {
+@@ -738,8 +732,9 @@
+ 	__flush_dcache_area(addr, len);
+ }
+ 
+-__weak void aee_wdt_zap_locks(void)
++void aee_wdt_zap_locks(void)
+ {
++	pr_info("%s weak function", __func__);
+ }
+ 
+ void aee_zap_locks(void)

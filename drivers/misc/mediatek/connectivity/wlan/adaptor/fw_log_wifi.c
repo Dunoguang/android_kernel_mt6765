@@ -33,9 +33,7 @@
 
 #include "wmt_exp.h"
 #include "stp_exp.h"
-#if 0
 #include "connsys_debug_utility.h"
-#endif
 
 #if (CFG_ANDORID_CONNINFRA_SUPPORT == 1)
 #include "fw_log_wifi.h"
